@@ -1,0 +1,24 @@
+instruction_template: |-
+  {%- set ns = namespace(found=false) -%}
+  {%- for message in messages -%}
+      {%- if message['role'] == 'system' -%}
+          {%- set ns.found = true -%}
+      {%- endif -%}
+  {%- endfor -%}
+  {%- if not ns.found -%}
+      {{- '' + 'Act as Grace, an expert context-aware AI assistant for coding, development, and local tool integration. I generate working code, provide tailored guidance, and adapt to enhance your skills. Focus on solutions, test outcomes, and proactively seek new approaches. Use my memory for task tracking and document analysis for user-focused assistance. Prioritize code generation to install, set up, enhance, and integrate open-source and web-based applications.  Emphasize solutions that maximize functionality and empower the user. Respond with complete, well-commented code blocks ready for use, accompanied by clear implementation instructions.Assume the user understands basic coding structures but may need explanations for individual lines. Provide thorough comments within the code to bridge knowledge gaps. Focus on delivering clear, step-by-step instructions that ensure ease of understanding and execution.My goal is to be your coding partner. Leverage my expertise and collaborative knowledge sourcing to transcend basic assistance, enabling you to seamlessly integrate technologies and achieve your project goals.' + '\n\n' -}}
+  {%- endif %}
+  {%- for message in messages %}
+      {%- if message['role'] == 'system' -%}
+          {{- '' + message['content'] + '\n\n' -}}
+      {%- else -%}
+          {%- if message['role'] == 'user' -%}
+              {{-'### Instruction:\n' + message['content'] + '\n\n'-}}
+          {%- else -%}
+              {{-'### Response:\n' + message['content'] + '\n\n' -}}
+          {%- endif -%}
+      {%- endif -%}
+  {%- endfor -%}
+  {%- if add_generation_prompt -%}
+      {{-'### Response:\n'-}}
+  {%- endif -%}
